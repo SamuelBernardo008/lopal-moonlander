@@ -10,11 +10,12 @@
 let canvas = document.querySelector("#Jogo");
 let contexto = canvas.getContext("2d");
 
+
 let modulolunar = {
     posicao: {
         x: 100,
         y: 100
-    }, 
+    },
     angulo: 0,
     largura: 20,
     altura: 20,
@@ -24,10 +25,15 @@ let modulolunar = {
         x: 0,
         y: 0
     },
-    combustivel: 100 
+    combustivel: 100
 }
 
-function desenharModuloLunar(){
+let chao = canvas.height - 30;
+if (modulolunar == -30) {
+    pararjogo()
+}
+
+function desenharModuloLunar() {
     contexto.save();
     contexto.beginPath();
     contexto.translate(modulolunar.posicao.x, modulolunar.posicao.y);
@@ -37,26 +43,25 @@ function desenharModuloLunar(){
     contexto.fillStyle = modulolunar.cor;
     contexto.fill();
     contexto.closePath();
-    
-    if (modulolunar.motorligado){
+
+    if (modulolunar.motorligado) {
         desenharchama();
     }
 
     contexto.restore();
 }
 
-function desenharchama(){
+function desenharchama() {
     contexto.beginPath();
     contexto.moveTo(-modulolunar.largura / 2, modulolunar.altura / 2);
     contexto.lineTo(modulolunar.largura / 2, modulolunar.altura / 2);
     contexto.lineTo(0, modulolunar.altura / 2 + Math.random() * 90);
-    contexto.lineTo(-modulolunar.largura / 2, modulolunar.altura / 2);
     contexto.closePath();
     contexto.fillStyle = "orange";
     contexto.fill();
 }
 
-function mostrarvelocidade(){
+function mostrarvelocidade() {
     contexto.font = "bold 18px times new roman";
     contexto.textAlign = "center";
     contexto.textBaseline = "middle";
@@ -65,7 +70,7 @@ function mostrarvelocidade(){
     contexto.fillText(velocidade, 100, 60)
 }
 
-function mostrarcombustivel(){
+function mostrarcombustivel() {
     contexto.font = "bold 18px times new roman";
     contexto.textAlign = "center";
     contexto.textBaseline = "middle";
@@ -76,55 +81,69 @@ function mostrarcombustivel(){
 
 
 
-function desenhar(){
+function desenhar() {
     contexto.clearRect(0, 0, canvas.width, canvas.height);
 
-    
+
     atracaogravitacional();
     desenharModuloLunar();
-    requestAnimationFrame(desenhar);
     mostrarvelocidade()
     mostrarcombustivel()
+    if(modulolunar.posicao.y >= (canvas.height - 0.5 * modulolunar.altura)){
+       if(modulolunar.posicao.y >= 5){
+        return alert("Você morreu de queda")
+       }else{
+        return alert("Ganhou!")
+       }
+    }
+    requestAnimationFrame(desenhar);
 }
 
 document.addEventListener("keydown", teclaPressionada);
 
 
-function teclaPressionada(evento){
-    if(evento.keyCode == 38){
+function teclaPressionada(evento) {
+    if (evento.keyCode == 38) {
         modulolunar.motorligado = true;
-    
+
     }
 }
 
 document.addEventListener("keyup", teclasolta);
 
-function teclasolta(evento){
-    if(evento.keyCode == 38){
+function teclasolta(evento) {
+    if (evento.keyCode == 38) {
         modulolunar.motorligado = false;
     }
 }
 
-let gravidade = 0.1;
+let gravidade = 0.050
 
-function atracaogravitacional(){
+function atracaogravitacional() {
     modulolunar.posicao.x += modulolunar.velocidade.x;
     modulolunar.posicao.y += modulolunar.velocidade.y;
     if (modulolunar.motorligado) {
-        modulolunar.velocidade.y -= 0.0115
-        modulolunar.combustivel -= 0.05
-    }if(modulolunar.combustivel < 0){
+        modulolunar.velocidade.y -= 0.0150
+        modulolunar.combustivel -= 0.1
+    } if (modulolunar.combustivel < 0) {
         modulolunar.combustivel = 0
     }
 
-    if(!modulolunar.motorligado){
-    modulolunar.velocidade.y += gravidade;}
+    if (!modulolunar.motorligado) {
+        modulolunar.velocidade.y += gravidade;
+    }
 
 
-    if (modulolunar.combustivel == 0){
+    if (modulolunar.combustivel == 0) {
         modulolunar.motorligado = false
     }
+
+    if (modulolunar.posicao.y < 10) {
+        modulolunar.posicao.y = 10;
+
+    }
+    if (modulolunar.posicao.y > 590) {
+        modulolunar.posicao.y = 590;
+    }
 }
-
-
 desenhar();
