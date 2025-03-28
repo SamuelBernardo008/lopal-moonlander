@@ -1,3 +1,10 @@
+//Moonlander. Um jogo de alunissagem.
+//Samuel Bernardo (https://github.com/SamuelBernardo008)
+//28/03/2025
+//Versão 0.1.0
+
+
+
 /** @type {HTMLCanvasElement} */
 
 let canvas = document.querySelector("#Jogo");
@@ -11,7 +18,7 @@ let modulolunar = {
     angulo: 0,
     largura: 20,
     altura: 20,
-    cor: "black",
+    cor: "white ",
     motorligado: false,
     velocidade: {
         x: 0,
@@ -41,32 +48,31 @@ function desenharchama(){
     contexto.beginPath();
     contexto.moveTo(-modulolunar.largura / 2, modulolunar.altura / 2);
     contexto.lineTo(modulolunar.largura / 2, modulolunar.altura / 2);
-    contexto.lineTo(0, modulolunar.altura / 2 + Math.random() * 9000);
+    contexto.lineTo(0, modulolunar.altura / 2 + Math.random() * 90);
     contexto.lineTo(-modulolunar.largura / 2, modulolunar.altura / 2);
     contexto.closePath();
     contexto.fillStyle = "orange";
     contexto.fill();
 }
 
-let x = 100;
+function mostrarvelocidade(){
+    contexto.font = "bold 18px times new roman";
+    contexto.textAlign = "center";
+    contexto.textBaseline = "middle";
+    contexto.fillStyle = "lightgray";
+    let velocidade = `velocidade = ${(10 * modulolunar.velocidade.y).toFixed(2)}`;
+    contexto.fillText(velocidade, 100, 60)
+}
+
 
 function desenhar(){
     contexto.clearRect(0, 0, canvas.width, canvas.height);
 
-    contexto.save();
-    contexto.translate(canvas.width / 2, canvas.height / 2);
-    contexto.beginPath();
-    contexto.rotate(Math.PI / 4);
-    contexto.rect(x, 100, 25, 10);
-    contexto.fillStyle = "black";
-    contexto.fill();
-    contexto.restore();
-
-    x = x + 1;
-
+    
     atracaogravitacional();
-    requestAnimationFrame(desenhar);
     desenharModuloLunar();
+    requestAnimationFrame(desenhar);
+    mostrarvelocidade()
 }
 
 document.addEventListener("keydown", teclaPressionada);
@@ -94,10 +100,6 @@ function atracaogravitacional(){
         modulolunar.velocidade.y -= 0.2; 
     }
     modulolunar.velocidade.y += gravidade;
-    if (modulolunar.posicao.y > canvas.height - modulolunar.altura) {
-        modulolunar.posicao.y = canvas.height - modulolunar.altura;
-        modulolunar.velocidade.y = 0;  
-    }
 }
 
 desenhar();
