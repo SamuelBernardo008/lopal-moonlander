@@ -23,7 +23,8 @@ let modulolunar = {
     velocidade: {
         x: 0,
         y: 0
-    }
+    },
+    combustivel: 100 
 }
 
 function desenharModuloLunar(){
@@ -64,6 +65,16 @@ function mostrarvelocidade(){
     contexto.fillText(velocidade, 100, 60)
 }
 
+function mostrarcombustivel(){
+    contexto.font = "bold 18px times new roman";
+    contexto.textAlign = "center";
+    contexto.textBaseline = "middle";
+    contexto.fillStyle = "lightgray";
+    let combustivel = `combustível = ${(modulolunar.combustivel).toFixed(0)}%`;
+    contexto.fillText(combustivel, 100, 80)
+}
+
+
 
 function desenhar(){
     contexto.clearRect(0, 0, canvas.width, canvas.height);
@@ -73,13 +84,16 @@ function desenhar(){
     desenharModuloLunar();
     requestAnimationFrame(desenhar);
     mostrarvelocidade()
+    mostrarcombustivel()
 }
 
 document.addEventListener("keydown", teclaPressionada);
 
+
 function teclaPressionada(evento){
     if(evento.keyCode == 38){
         modulolunar.motorligado = true;
+    
     }
 }
 
@@ -97,9 +111,20 @@ function atracaogravitacional(){
     modulolunar.posicao.x += modulolunar.velocidade.x;
     modulolunar.posicao.y += modulolunar.velocidade.y;
     if (modulolunar.motorligado) {
-        modulolunar.velocidade.y -= 0.2; 
+        modulolunar.velocidade.y -= 0.0115
+        modulolunar.combustivel -= 0.05
+    }if(modulolunar.combustivel < 0){
+        modulolunar.combustivel = 0
     }
-    modulolunar.velocidade.y += gravidade;
+
+    if(!modulolunar.motorligado){
+    modulolunar.velocidade.y += gravidade;}
+
+
+    if (modulolunar.combustivel == 0){
+        modulolunar.motorligado = false
+    }
 }
+
 
 desenhar();
