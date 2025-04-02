@@ -25,7 +25,9 @@ let modulolunar = {
         x: 0,
         y: 0
     },
-    combustivel: 100
+    combustivel: 100,
+    rotacaoantihorario: false,
+    rotacaohorario: false
 }
 
 let chao = canvas.height - 30;
@@ -66,7 +68,7 @@ function mostrarvelocidade() {
     contexto.textAlign = "center";
     contexto.textBaseline = "middle";
     contexto.fillStyle = "lightgray";
-    let velocidade = `velocidade = ${(10 * modulolunar.velocidade.y).toFixed(2)}`;
+    let velocidade = `velocidade = ${(modulolunar.velocidade.y).toFixed(2)}`;
     contexto.fillText(velocidade, 100, 60)
 }
 
@@ -90,7 +92,7 @@ function desenhar() {
     mostrarvelocidade()
     mostrarcombustivel()
     if(modulolunar.posicao.y >= (canvas.height - 0.5 * modulolunar.altura)){
-       if(modulolunar.posicao.y >= 5){
+       if(modulolunar.velocidade.y >= 5){
         return alert("Você morreu de queda")
        }else{
         return alert("Ganhou!")
@@ -106,15 +108,26 @@ function teclaPressionada(evento) {
     if (evento.keyCode == 38) {
         modulolunar.motorligado = true;
 
-    }
-}
+    }else if(evento.keyCode == 37){
+        modulolunar.rotacaoantihorario = true;
 
-document.addEventListener("keyup", teclasolta);
+    }else if(evento.keyCode == 39){
+        modulolunar.rotacaohorario = true;
+    }
+
+    document.addEventListener("keyup", teclasolta);
 
 function teclasolta(evento) {
     if (evento.keyCode == 38) {
         modulolunar.motorligado = false;
+
+    }else if(evento.keyCode == 37){
+        modulolunar.rotacaoantihorario = false;
+
+    }else if (evento.keyCode == 39){
+        modulolunar.rotacaohorario = false;
     }
+}
 }
 
 let gravidade = 0.050
@@ -122,6 +135,13 @@ let gravidade = 0.050
 function atracaogravitacional() {
     modulolunar.posicao.x += modulolunar.velocidade.x;
     modulolunar.posicao.y += modulolunar.velocidade.y;
+
+    if(modulolunar.rotacaoantihorario){
+        modulolunar.angulo -= Math.PI/180;
+    }else if (modulolunar.rotacaohorario){
+        modulolunar. angulo += Math.PI/180
+    }
+
     if (modulolunar.motorligado) {
         modulolunar.velocidade.y -= 0.0150
         modulolunar.combustivel -= 0.1
